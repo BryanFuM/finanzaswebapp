@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+   <link rel="icon" type="image/png" href="icon.png">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ayuda y Soporte - MiHogarFinanzas</title>
+  <link rel="stylesheet" href="assets.css">
+  <style>
+    * {box-sizing: border-box; font-family: "Segoe UI", sans-serif;}
+    .main {padding: 2rem;}
+    h1 {color: #1a73e8; margin-bottom: 1rem;}
+    .tabs {display: flex; border-bottom: 2px solid #ccc; margin-bottom: 1rem;}
+    .tabs button {
+      flex: 1; padding: 1rem; border: none; cursor: pointer;
+      background: #f1f1f1; font-weight: bold; transition: 0.3s;
+      border-radius: 8px 8px 0 0;
+      color: black;
+    }
+    .tabs button.active {background: #1a73e8; color: white;}
+    .content {background: white; padding: 1.5rem; border-radius: 0 0 12px 12px; box-shadow: 0px 4px 12px rgba(0,0,0,0.1);}
+    .section {display: none;}
+    .section.active {display: block;}
+    h2 {margin-bottom: 0.8rem; color: #333;}
+    p {margin: 0.5rem 0; line-height: 1.5;}
+    .contact-form label {display: block; margin-top: 0.8rem; font-size: 0.9rem; color: #333;}
+    .contact-form input, .contact-form textarea {
+      width: 100%; padding: 0.7rem; border: 1px solid #ccc;
+      border-radius: 8px; margin-top: 0.3rem;
+    }
+    .contact-form button {
+      margin-top: 1rem; padding: 0.8rem 1.5rem; border: none;
+      border-radius: 8px; background: #1a73e8; color: white;
+      font-weight: bold; cursor: pointer; transition: 0.3s;
+    }
+    .contact-form button:hover {background: #0f5dd1;}
+
+    * {margin: 0; padding: 0; box-sizing: border-box; font-family: "Segoe UI", sans-serif;}
+body {display: flex; height: 100vh; background: #f4f6f9;}
+
+.sidebar {
+  width: 250px; background: #1a73e8; color: white;
+  display: flex; flex-direction: column; padding: 1rem;
+}
+
+.sidebar h3 {text-align: center; margin-bottom: 2rem;}
+
+.sidebar a {
+  text-decoration: none; color: white; padding: 0.6rem 0.8rem;
+  display: block; border-radius: 8px; transition: 0.3s;
+}
+
+.sidebar a:hover {background: #0f5dd1;}
+
+.main {
+  flex: 1; padding: 2rem; overflow-y: auto;
+}
+
+.logout {margin-top: auto; text-align: center;}
+
+.logout button {
+  background: red; border: none; color: white; padding: 0.7rem 1rem;
+  border-radius: 8px; cursor: pointer; transition: 0.3s; width: 100%;
+}
+
+.logout button:hover {background: darkred;}
+
+.brand {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 2rem;
+}
+
+.brand img {
+  width: 35px;       /* tamaño del logo */
+  height: 35px;
+  border-radius: 50%; /* si quieres redondo, si no: borra esta línea */
+  object-fit: cover;
+}
+
+.brand span {
+  font-weight: bold;
+  font-size: 1.1rem;
+}
+
+  </style>
+</head>
+<body>
+<div class="sidebar">
+  <div class="brand">
+  <img src="logo.png" alt="Logo">
+  <span>MiHogarFinanzas</span>
+</div>
+  <a href="/dashboard.html">🏠 Dashboard</a>
+  <a href="/clientes.html">👤 Clientes</a>
+  <a href="/inmuebles.html">🏘️ Unidades</a>
+  <a href="/configuracion.html">⚙️ Configuración</a>
+  <a href="/planpagos.html">📊 Plan de Pagos</a>
+  <a href="/indicadores.html">📈 Indicadores</a>
+  <a href="/reportes.html">🗂 Reportes</a>
+  <a href="/ayuda.html">❓ Ayuda</a>
+
+  <div class="logout">
+    <button id="logout">Cerrar Sesión</button>
+  </div>
+</div>
+
+
+<div class="main">
+  <h1>Ayuda y Soporte</h1>
+
+  <div class="tabs">
+    <button id="btnGuia" class="active">📖 Guía de Uso</button>
+    <button id="btnGlosario">📚 Glosario</button>
+    <button id="btnContacto">📩 Contacto</button>
+  </div>
+
+  <div class="content">
+    <div id="guia" class="section active">
+      <h2>Guía Rápida</h2>
+      <p>➡ <b>Login:</b> Ingrese con usuario y contraseña o regístrese.</p>
+      <p>➡ <b>Clientes:</b> Gestione la información socioeconómica de los clientes.</p>
+      <p>➡ <b>Unidades:</b> Registre propiedades disponibles y su estado.</p>
+      <p>➡ <b>Configuración:</b> Defina moneda, tasa, capitalización y periodo de gracia.</p>
+      <p>➡ <b>Plan de Pagos:</b> Genere cronogramas con método francés.</p>
+      <p>➡ <b>Indicadores:</b> Calcule VAN y TIR automáticamente.</p>
+      <p>➡ <b>Reportes:</b> Exporte los resultados a PDF y Excel.</p>
+    
+    <!-- Imagen al final del contenido principal -->
+<div style="width:100%; text-align:center; margin-top:20px;">
+  <img src="ayudaimage.jpeg" 
+       alt="Sección de ayuda y soporte al usuario" 
+       style="width:100%; max-width:1200px; height:auto; border-radius:8px; box-shadow:0 4px 12px rgba(0,0,0,0.15);">
+</div>
+    </div>
+
+    <div id="glosario" class="section">
+      <h2>Glosario</h2>
+      <p><b>TEA:</b> Tasa Efectiva Anual.</p>
+      <p><b>TIN:</b> Tasa Nominal.</p>
+      <p><b>VAN:</b> Valor Actual Neto.</p>
+      <p><b>TIR:</b> Tasa Interna de Retorno.</p>
+      <p><b>Periodo de Gracia:</b> Plazo donde el cliente no paga capital o intereses.</p>
+    </div>
+
+    <div id="contacto" class="section">
+      <h2>Contacto y Soporte</h2>
+      <form class="contact-form" onsubmit="enviarMensaje(event)">
+        <label>Nombre</label>
+        <input type="text" id="nombre" required>
+        <label>Correo Electrónico</label>
+        <input type="email" id="email" required>
+        <label>Mensaje</label>
+        <textarea id="mensaje" rows="4" required></textarea>
+        <button type="submit">Enviar</button>
+      </form>
+      <p id="respuesta" style="color:green;margin-top:1rem;"></p>
+    </div>
+  </div>
+</div>
+
+<script>
+const token = localStorage.getItem('mhf_token');
+if(!token){ alert('Inicia sesión'); window.location.href='/login.html'; }
+document.getElementById('logout').onclick = ()=>{ 
+  localStorage.removeItem('mhf_token'); 
+  localStorage.removeItem('mhf_user'); 
+  window.location.href='/login.html'; 
+};
+
+const btnGuia = document.getElementById("btnGuia");
+const btnGlosario = document.getElementById("btnGlosario");
+const btnContacto = document.getElementById("btnContacto");
+const guia = document.getElementById("guia");
+const glosario = document.getElementById("glosario");
+const contacto = document.getElementById("contacto");
+
+function activar(tab){
+  guia.classList.remove("active");
+  glosario.classList.remove("active");
+  contacto.classList.remove("active");
+  btnGuia.classList.remove("active");
+  btnGlosario.classList.remove("active");
+  btnContacto.classList.remove("active");
+  if(tab === "guia"){ guia.classList.add("active"); btnGuia.classList.add("active"); }
+  if(tab === "glosario"){ glosario.classList.add("active"); btnGlosario.classList.add("active"); }
+  if(tab === "contacto"){ contacto.classList.add("active"); btnContacto.classList.add("active"); }
+}
+
+btnGuia.onclick = () => activar("guia");
+btnGlosario.onclick = () => activar("glosario");
+btnContacto.onclick = () => activar("contacto");
+
+function enviarMensaje(e){
+  e.preventDefault();
+  document.getElementById("respuesta").innerText = "✅ Mensaje enviado correctamente. Nos pondremos en contacto pronto.";
+  e.target.reset();
+}
+</script>
+<!-- BOTONES DE VOZ -->
+<div id="voiceControls" style="position:fixed;bottom:20px;right:20px;display:flex;flex-direction:column;gap:8px;z-index:9999;">
+  <button id="playVoice" style="padding:10px 15px;border:none;border-radius:50px;background:#1a73e8;color:white;font-size:16px;cursor:pointer;">🔊 Explicación</button>
+  <button id="pauseVoice" style="padding:10px 15px;border:none;border-radius:50px;background:#fbbc05;color:white;font-size:16px;cursor:pointer;">⏸ Pausa</button>
+  <button id="resetVoice" style="padding:10px 15px;border:none;border-radius:50px;background:#34a853;color:white;font-size:16px;cursor:pointer;">⏮ Reiniciar</button>
+</div>
+
+<script>
+const speechText = `Bienvenido a la sección de Ayuda y Soporte. 
+Aquí el usuario puede encontrar guía rápida de uso de todas las secciones del sistema: Login, Clientes, Inmuebles, Créditos, Plan de Pagos e Indicadores. 
+Incluye un glosario de términos financieros como TEA, TIR, VAN y Periodo de Gracia, así como un formulario de contacto para asistencia técnica. 
+La interfaz es clara, profesional y responsiva para casetas inmobiliarias.`;
+
+const synth = window.speechSynthesis;
+let utterance = null;
+document.getElementById('playVoice').addEventListener('click', () => {
+  if(synth.speaking) return;
+  utterance = new SpeechSynthesisUtterance(speechText);
+  utterance.lang = 'es-PE';
+  synth.speak(utterance);
+});
+document.getElementById('pauseVoice').addEventListener('click', () => {
+  if(synth.speaking && !synth.paused) synth.pause();
+  else if(synth.paused) synth.resume();
+});
+document.getElementById('resetVoice').addEventListener('click', () => synth.cancel());
+</script>
+<!-- EFECTO RASTRO DE SIMBOLOS MATEMATICOS -->
+<style>
+  .math-trail {
+    position: fixed;
+    pointer-events: none;
+    font-size: 18px;
+    font-weight: bold;
+    opacity: 1;
+    transition: opacity 1.5s ease-out, transform 1.5s ease-out;
+    z-index: 9999;
+    color: #1a73e8;
+  }
+</style>
+
+<script>
+(function(){
+  const symbols = ['$', '%', 'X', '+', '-', '=', '¥', '€', '£', '¢', '∆', '∑', 'π', '√', '∞', '≈', '÷', '×', '<', '>', '!', '@', '#', '&', '^', ':', ';', '?', '|', '~', '•'];
+  
+  function createTrail(x, y) {
+    const span = document.createElement('span');
+    span.classList.add('math-trail');
+    span.style.left = x + 'px';
+    span.style.top = y + 'px';
+    span.style.fontSize = (12 + Math.random() * 16) + 'px';
+    span.style.color = `hsl(${Math.random()*360}, 70%, 50%)`;
+    span.innerText = symbols[Math.floor(Math.random() * symbols.length)];
+    document.body.appendChild(span);
+
+    // Animación de desplazamiento y desaparición
+    setTimeout(() => {
+      span.style.transform = `translate(${Math.random()*30-15}px, ${Math.random()*30-15}px) rotate(${Math.random()*360}deg)`;
+      span.style.opacity = 0;
+    }, 50);
+
+    setTimeout(() => document.body.removeChild(span), 1600);
+  }
+
+  // Movimiento de mouse
+  window.addEventListener('mousemove', (e) => {
+    createTrail(e.clientX, e.clientY);
+  });
+
+  // Movimiento táctil (mobile)
+  window.addEventListener('touchmove', (e) => {
+    for(let i=0; i<e.touches.length; i++) {
+      createTrail(e.touches[i].clientX, e.touches[i].clientY);
+    }
+  });
+})();
+</script>
+
+</body>
+</html>

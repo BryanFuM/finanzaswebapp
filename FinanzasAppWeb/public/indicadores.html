@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <link rel="icon" type="image/png" href="icon.png">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Indicadores Financieros - MiHogarFinanzas</title>
+  <style>
+    * {margin: 0; padding: 0; box-sizing: border-box; font-family: "Segoe UI", sans-serif;}
+    body {display: flex; min-height: 100vh; background: #f4f6f9;}
+
+    .sidebar {
+      width: 250px; background: #1a73e8; color: white;
+      display: flex; flex-direction: column; padding: 1rem;
+      flex-shrink: 0;
+    }
+    .sidebar h3 {text-align: center; margin-bottom: 2rem;}
+    .sidebar a {
+      text-decoration: none; color: white; padding: 0.6rem 0.8rem;
+      display: block; border-radius: 8px; transition: 0.3s;
+    }
+    .sidebar a:hover {background: #0f5dd1;}
+    .main {flex: 1; padding: 2rem; overflow-y: auto; min-width: 0;}
+    .logout {margin-top: auto; text-align: center;}
+    .logout button {
+      background: red; border: none; color: white; padding: 0.7rem 1rem;
+      border-radius: 8px; cursor: pointer; transition: 0.3s; width: 100%;
+    }
+    .logout button:hover {background: darkred;}
+
+    .brand {
+      display: flex; align-items: center; justify-content: center;
+      gap: 10px; margin-bottom: 2rem;
+    }
+    .brand img {width: 35px; height: 35px; border-radius: 50%; object-fit: cover;}
+    .brand span {font-weight: bold; font-size: 1.1rem;}
+
+    h1 {color: #1a73e8; margin-bottom: 1rem;}
+    
+    .content-box {
+      background: white; padding: 1.5rem; border-radius: 12px;
+      box-shadow: 0px 4px 12px rgba(0,0,0,0.1); margin-bottom: 2rem;
+    }
+
+    label {display: block; margin-top: 0.8rem; font-size: 0.9rem; color: #333;}
+    select, input {
+      width: 100%; padding: 0.7rem; border: 1px solid #ccc;
+      border-radius: 8px; margin-top: 0.3rem;
+    }
+    button {
+      margin-top: 1rem; padding: 0.8rem 1.5rem; border: none; border-radius: 8px;
+      background: #1a73e8; color: white; font-weight: bold; cursor: pointer; transition: 0.3s;
+    }
+    button:hover {background: #0f5dd1;}
+
+    .indicadores-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1rem; margin-top: 1rem;
+    }
+    .indicador-card {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white; padding: 1.5rem; border-radius: 12px;
+      text-align: center;
+    }
+    .indicador-card.van {background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);}
+    .indicador-card.tir {background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);}
+    .indicador-card.tcea {background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);}
+    .indicador-card h3 {font-size: 0.9rem; opacity: 0.9; margin-bottom: 0.5rem;}
+    .indicador-card .valor {font-size: 1.8rem; font-weight: bold;}
+    .indicador-card small {display: block; margin-top: 0.5rem; opacity: 0.8;}
+
+    .info-prestamo {
+      background: #e8f0fe; padding: 1rem; border-radius: 8px;
+      border-left: 4px solid #1a73e8; margin-bottom: 1rem;
+    }
+    .info-prestamo p {margin: 0.3rem 0;}
+
+    .table-responsive {width: 100%; overflow-x: auto; margin-top: 1rem;}
+    table {width: 100%; border-collapse: collapse; min-width: 600px;}
+    th, td {padding: 0.8rem; text-align: center; border-bottom: 1px solid #ddd;}
+    th {background: #1a73e8; color: white;}
+    tr:hover {background: #f5f5f5;}
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      body {flex-direction: column;}
+      .sidebar {
+        width: 100%; flex-direction: row; flex-wrap: wrap;
+        justify-content: center; padding: 0.5rem;
+      }
+      .sidebar a {padding: 0.5rem 0.8rem; margin: 0.2rem; font-size: 0.85rem;}
+      .brand {width: 100%; margin-bottom: 0.5rem;}
+      .logout {width: 100%; margin-top: 0.5rem;}
+      .main {padding: 1rem;}
+    }
+    @media (max-width: 600px) {
+      .sidebar a {flex: 1 1 45%; text-align: center; font-size: 0.8rem;}
+      h1 {font-size: 1.3rem;}
+      .indicador-card .valor {font-size: 1.4rem;}
+    }
+  </style>
+</head>
+<body>
+  <div class="sidebar">
+    <div class="brand">
+      <img src="logo.png" alt="Logo">
+      <span>MiHogarFinanzas</span>
+    </div>
+    <a href="/dashboard.html">🏠 Dashboard</a>
+    <a href="/clientes.html">👤 Clientes</a>
+    <a href="/inmuebles.html">🏘️ Unidades</a>
+    <a href="/configuracion.html">⚙️ Configuración</a>
+    <a href="/planpagos.html">📊 Plan de Pagos</a>
+    <a href="/indicadores.html">📈 Indicadores</a>
+    <a href="/reportes.html">🗂 Reportes</a>
+    <a href="/ayuda.html">❓ Ayuda</a>
+    <div class="logout">
+      <button id="logout">Cerrar Sesión</button>
+    </div>
+  </div>
+
+  <div class="main">
+    <h1>📈 Indicadores Financieros de Préstamos</h1>
+
+    <div class="content-box">
+      <h2>Seleccionar Préstamo</h2>
+      <label>Préstamo Registrado</label>
+      <select id="loanSelect">
+        <option value="">Cargando préstamos...</option>
+      </select>
+
+      <button id="calcular" style="margin-top:1rem;">Ver Indicadores</button>
+      <p style="margin-top:0.5rem; color:#666; font-size:0.85rem;">
+        Los indicadores mostrados son los calculados al momento de generar el plan de pagos.
+      </p>
+    </div>
+
+    <!-- Info del préstamo seleccionado -->
+    <div class="content-box" id="infoBox" style="display:none;">
+      <h2>Información del Préstamo</h2>
+      <div class="info-prestamo" id="infoPrestamo"></div>
+
+      <!-- Indicadores VAN, TIR, TCEA -->
+      <div class="indicadores-grid" id="indicadoresGrid"></div>
+
+      <!-- Cronograma resumido -->
+      <h3 style="margin-top:1.5rem;">Cronograma de Pagos</h3>
+      <div class="table-responsive">
+        <table id="tablaCronograma">
+          <thead>
+            <tr>
+              <th>Cuota</th>
+              <th>Tipo</th>
+              <th>Amortización</th>
+              <th>Interés</th>
+              <th>Cuota Total</th>
+              <th>Saldo</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const api = '/api';
+    const token = localStorage.getItem('mhf_token');
+    if (!token) { alert('Inicia sesión'); location.href = '/login.html'; }
+
+    document.getElementById('logout').onclick = () => {
+      localStorage.removeItem('mhf_token');
+      localStorage.removeItem('mhf_user');
+      window.location.href = '/login.html';
+    };
+
+    let prestamosData = [];
+
+    // Cargar préstamos
+    async function loadLoans() {
+      try {
+        const res = await fetch(api + '/loans', { headers: { Authorization: 'Bearer ' + token } });
+        const loans = await res.json();
+        prestamosData = loans;
+
+        const select = document.getElementById('loanSelect');
+        if (loans.length === 0) {
+          select.innerHTML = '<option value="">No hay préstamos registrados</option>';
+        } else {
+          select.innerHTML = '<option value="">Seleccione un préstamo...</option>' +
+            loans.map(l => `<option value="${l.id}">
+              #${l.id} - ${l.Client ? l.Client.full_name : 'Cliente'} - 
+              ${l.moneda === 'USD' ? '$' : 'S/'} ${parseFloat(l.amount).toLocaleString()} - 
+              ${l.term_months} meses
+            </option>`).join('');
+        }
+      } catch (err) {
+        console.error('Error cargando préstamos:', err);
+        document.getElementById('loanSelect').innerHTML = '<option value="">Error al cargar</option>';
+      }
+    }
+
+    loadLoans();
+
+    // Cuando se selecciona un préstamo, cargar su información
+    document.getElementById('loanSelect').onchange = function() {
+      const loanId = parseInt(this.value);
+      if (!loanId) return;
+      // Auto-click en calcular para mostrar los datos
+    };
+
+    // Calcular indicadores - Ahora solo muestra los valores guardados del préstamo
+    document.getElementById('calcular').onclick = async function () {
+      const loanId = parseInt(document.getElementById('loanSelect').value);
+
+      if (!loanId) {
+        alert('❌ Seleccione un préstamo');
+        return;
+      }
+
+      const loan = prestamosData.find(l => l.id === loanId);
+      if (!loan) {
+        alert('❌ Préstamo no encontrado');
+        return;
+      }
+
+      // Extraer datos del préstamo
+      const montoOriginal = parseFloat(loan.amount) + (parseFloat(loan.bono_monto) || 0);
+      const bonoMonto = parseFloat(loan.bono_monto) || 0;
+      const bonoAplica = loan.bono_techo;
+      const montoFinanciado = parseFloat(loan.amount);
+
+      const plazo = parseInt(loan.term_months) || 12;
+      const tasaEfectiva = parseFloat(loan.annual_rate) || 0.11;
+      const tasaDescuento = parseFloat(loan.tasa_descuento) || 0.20;
+
+      const tipoGracia = loan.periodo_gracia || 'ninguno';
+      const mesesGracia = parseInt(loan.meses_gracia) || 0;
+      const moneda = loan.moneda || 'PEN';
+      const simbolo = moneda === 'USD' ? '$' : 'S/';
+      
+      // Frecuencia de pago
+      const diasPeriodo = parseInt(loan.frecuencia_pago) || 30;
+      const nombrePeriodo = diasPeriodo === 30 ? 'mensual' : 
+                            diasPeriodo === 60 ? 'bimestral' : 
+                            diasPeriodo === 90 ? 'trimestral' : 
+                            diasPeriodo === 180 ? 'semestral' : 'anual';
+
+      // Obtener indicadores guardados
+      const vanCalculado = parseFloat(loan.van_calculado) || 0;
+      const tirPeriodo = parseFloat(loan.tir_periodo) || 0;
+      const tirAnual = parseFloat(loan.tir_anual) || 0;
+      const tceaAnual = parseFloat(loan.tcea_anual) || 0;
+      const cuotaBase = parseFloat(loan.cuota_base) || 0;
+      const cuotaTotal = parseFloat(loan.cuota_total) || 0;
+      const totalPagar = parseFloat(loan.total_pagar) || 0;
+      const totalIntereses = parseFloat(loan.total_intereses) || 0;
+
+      // Calcular tasa del período para mostrar
+      const tasaPeriodo = Math.pow(1 + tasaEfectiva, diasPeriodo / 360) - 1;
+      const tasaDescPeriodo = Math.pow(1 + tasaDescuento, diasPeriodo / 360) - 1;
+
+      // Mostrar info del préstamo
+      document.getElementById('infoBox').style.display = 'block';
+      document.getElementById('infoPrestamo').innerHTML = `
+        <p><b>Cliente:</b> ${loan.Client ? loan.Client.full_name : 'N/A'}</p>
+        <p><b>Propiedad:</b> ${loan.Property ? loan.Property.project_name : 'N/A'}</p>
+        <p><b>Monto Original:</b> ${simbolo} ${montoOriginal.toLocaleString()}</p>
+        ${bonoAplica ? `<p><b>Bono Techo Propio:</b> - ${simbolo} ${bonoMonto.toLocaleString()}</p>` : ''}
+        <p><b>Monto Financiado:</b> ${simbolo} ${montoFinanciado.toLocaleString()}</p>
+        <p><b>Plazo:</b> ${plazo} cuotas ${nombrePeriodo}es</p>
+        <p><b>TEA:</b> ${(tasaEfectiva * 100).toFixed(2)}%</p>
+        <p><b>TEP (${nombrePeriodo}):</b> ${(tasaPeriodo * 100).toFixed(4)}%</p>
+        <p><b>Tasa de Descuento (COK):</b> ${(tasaDescuento * 100).toFixed(2)}% anual</p>
+        <p><b>Periodo de Gracia:</b> ${tipoGracia !== 'ninguno' ? tipoGracia + ' (' + mesesGracia + ' períodos)' : 'Ninguno'}</p>
+        <p><b>Cuota ${nombrePeriodo.charAt(0).toUpperCase() + nombrePeriodo.slice(1)}:</b> ${simbolo} ${cuotaTotal.toFixed(2)}</p>
+        <p><b>Total a Pagar:</b> ${simbolo} ${totalPagar.toFixed(2)}</p>
+        <p><b>Total Intereses:</b> ${simbolo} ${totalIntereses.toFixed(2)}</p>
+      `;
+
+      // Mostrar indicadores en cards (valores guardados)
+      document.getElementById('indicadoresGrid').innerHTML = `
+        <div class="indicador-card van">
+          <h3>VAN del Préstamo</h3>
+          <div class="valor">${simbolo} ${vanCalculado.toFixed(2)}</div>
+          <small>${vanCalculado > 0 ? '✅ Genera valor' : '⚠️ Por debajo del COK'}</small>
+        </div>
+        <div class="indicador-card tir">
+          <h3>TIR ${nombrePeriodo.charAt(0).toUpperCase() + nombrePeriodo.slice(1)}</h3>
+          <div class="valor">${(tirPeriodo * 100).toFixed(4)}%</div>
+          <small>→ ${(tirAnual * 100).toFixed(2)}% anual</small>
+        </div>
+        <div class="indicador-card tcea">
+          <h3>TCEA (Costo Efectivo Anual)</h3>
+          <div class="valor">${(tceaAnual * 100).toFixed(2)}%</div>
+          <small>Incluye todos los costos</small>
+        </div>
+      `;
+
+      // Cargar cronograma desde la API
+      try {
+        const paymentsRes = await fetch(api + '/loans/' + loanId + '/payments', { 
+          headers: { Authorization: 'Bearer ' + token } 
+        });
+        const payments = await paymentsRes.json();
+
+        // Actualizar encabezado de tabla
+        document.querySelector('#tablaCronograma thead tr').innerHTML = `
+          <th>Cuota</th>
+          <th>Amortización</th>
+          <th>Interés</th>
+          <th>Cuota Total</th>
+          <th>Saldo</th>
+        `;
+
+        // Mostrar cronograma
+        const tbody = document.querySelector('#tablaCronograma tbody');
+        tbody.innerHTML = payments.map(p => `
+          <tr>
+            <td>${p.installment_number}</td>
+            <td>${simbolo} ${parseFloat(p.amortization).toFixed(2)}</td>
+            <td>${simbolo} ${parseFloat(p.interest).toFixed(2)}</td>
+            <td>${simbolo} ${parseFloat(p.total).toFixed(2)}</td>
+            <td>${simbolo} ${parseFloat(p.balance).toFixed(2)}</td>
+          </tr>
+        `).join('');
+      } catch (err) {
+        console.error('Error cargando pagos:', err);
+        document.querySelector('#tablaCronograma tbody').innerHTML = '<tr><td colspan="5">Error al cargar cronograma</td></tr>';
+      }
+    };
+  </script>
+
+  <!-- BOTONES DE VOZ -->
+  <div id="voiceControls" style="position:fixed;bottom:20px;right:20px;display:flex;flex-direction:column;gap:8px;z-index:9999;">
+    <button id="playVoice" style="padding:10px 15px;border:none;border-radius:50px;background:#1a73e8;color:white;font-size:16px;cursor:pointer;">🔊 Explicación</button>
+    <button id="pauseVoice" style="padding:10px 15px;border:none;border-radius:50px;background:#fbbc05;color:white;font-size:16px;cursor:pointer;">⏸ Pausa</button>
+    <button id="resetVoice" style="padding:10px 15px;border:none;border-radius:50px;background:#34a853;color:white;font-size:16px;cursor:pointer;">⏮ Reiniciar</button>
+  </div>
+
+  <script>
+    const speechText = `Bienvenido a los Indicadores Financieros. 
+    Esta sección permite consultar los indicadores VAN, TIR y TCEA de los préstamos registrados en el sistema.
+    Seleccione un préstamo del listado y especifique la tasa de descuento o costo de oportunidad del capital.
+    El sistema calculará automáticamente los indicadores basándose en los flujos reales del cronograma de pagos.
+    El VAN indica si la operación genera valor por encima del costo de oportunidad.
+    La TIR representa la rentabilidad real del crédito.
+    La TCEA es el Costo Efectivo Anual que el cliente paga realmente.`;
+
+    const synth = window.speechSynthesis;
+    let utterance = null;
+    document.getElementById('playVoice').addEventListener('click', () => {
+      if (synth.speaking) return;
+      utterance = new SpeechSynthesisUtterance(speechText);
+      utterance.lang = 'es-PE';
+      synth.speak(utterance);
+    });
+    document.getElementById('pauseVoice').addEventListener('click', () => {
+      if (synth.speaking && !synth.paused) synth.pause();
+      else if (synth.paused) synth.resume();
+    });
+    document.getElementById('resetVoice').addEventListener('click', () => synth.cancel());
+  </script>
+
+  <!-- EFECTO RASTRO DE SIMBOLOS MATEMATICOS -->
+  <style>
+    .math-trail {
+      position: fixed; pointer-events: none; font-size: 18px;
+      font-weight: bold; opacity: 1;
+      transition: opacity 1.5s ease-out, transform 1.5s ease-out;
+      z-index: 9999; color: #1a73e8;
+    }
+  </style>
+  <script>
+    (function () {
+      const symbols = ['$', '%', 'X', '+', '-', '=', '¥', '€', '£', '¢', '∆', '∑', 'π', '√', '∞', '≈', '÷', '×'];
+      function createTrail(x, y) {
+        const span = document.createElement('span');
+        span.classList.add('math-trail');
+        span.style.left = x + 'px';
+        span.style.top = y + 'px';
+        span.style.fontSize = (12 + Math.random() * 16) + 'px';
+        span.style.color = `hsl(${Math.random() * 360}, 70%, 50%)`;
+        span.innerText = symbols[Math.floor(Math.random() * symbols.length)];
+        document.body.appendChild(span);
+        setTimeout(() => {
+          span.style.transform = `translate(${Math.random() * 30 - 15}px, ${Math.random() * 30 - 15}px) rotate(${Math.random() * 360}deg)`;
+          span.style.opacity = 0;
+        }, 50);
+        setTimeout(() => document.body.removeChild(span), 1600);
+      }
+      window.addEventListener('mousemove', (e) => createTrail(e.clientX, e.clientY));
+      window.addEventListener('touchmove', (e) => {
+        for (let i = 0; i < e.touches.length; i++) {
+          createTrail(e.touches[i].clientX, e.touches[i].clientY);
+        }
+      });
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+   <link rel="icon" type="image/png" href="icon.png">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Configuración de Créditos - MiHogarFinanzas</title>
+  <link rel="stylesheet" href="assets.css">
+  <style>
+    * {margin: 0; padding: 0; box-sizing: border-box; font-family: "Segoe UI", sans-serif;}
+    body {background: #f4f6f9; display: flex; height: 100vh;}
+    
+    .sidebar {
+      width: 250px;
+      background: #1a73e8;
+      color: white;
+      height: 100vh;
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+    }
+    .sidebar h3 {text-align: center; margin-bottom: 1rem;}
+    .sidebar a {
+      color: white;
+      text-decoration: none;
+      padding: 0.6rem 0.8rem;
+      display: block;
+      border-radius: 8px;
+      transition: 0.3s;
+      font-size: 0.95rem;
+    }
+    .sidebar a:hover {background: rgba(255,255,255,0.15);}
+    
+    .brand {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 1.5rem;
+    }
+    .brand img {
+      width: 35px;
+      height: 35px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+    .brand span {
+      font-weight: bold;
+      font-size: 1.1rem;
+    }
+    
+    .logout {margin-top: auto; text-align: center; padding-top: 1rem;}
+    .logout button {
+      background: red; border: none; color: white; padding: 0.7rem 1rem;
+      border-radius: 8px; cursor: pointer; transition: 0.3s; width: 100%;
+    }
+    .logout button:hover {background: darkred;}
+    
+    .main {
+      flex: 1;
+      padding: 2rem;
+      overflow-y: auto;
+    }
+    h1 {color: #1a73e8; margin-bottom: 1.5rem;}
+    .form-container {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 12px;
+      box-shadow: 0px 4px 12px rgba(0,0,0,0.1);
+      max-width: 600px;
+    }
+    label {display: block; margin-top: 0.8rem; font-size: 0.9rem; color: #333;}
+    select {
+      width: 100%;
+      padding: 0.7rem;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      margin-top: 0.3rem;
+    }
+    .tooltip {
+      font-size: 0.8rem; color: #555; margin-top: 0.3rem;
+    }
+    button {
+      margin-top: 1.5rem;
+      padding: 0.8rem 1.5rem;
+      border: none;
+      border-radius: 8px;
+      background: #1a73e8;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    button:hover {background: #0f5dd1;}
+    .result {
+      margin-top: 2rem;
+      padding: 1rem;
+      background: #e8f0fe;
+      border-left: 5px solid #1a73e8;
+      border-radius: 8px;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="sidebar">
+  <div class="brand">
+  <img src="logo.png" alt="Logo">
+  <span>MiHogarFinanzas</span>
+</div>
+  <a href="/dashboard.html">🏠 Dashboard</a>
+  <a href="/clientes.html">👤 Clientes</a>
+  <a href="/inmuebles.html">🏘️ Unidades</a>
+  <a href="/configuracion.html">⚙️ Configuración</a>
+  <a href="/planpagos.html">📊 Plan de Pagos</a>
+  <a href="/indicadores.html">📈 Indicadores</a>
+  <a href="/reportes.html">🗂 Reportes</a>
+  <a href="/ayuda.html">❓ Ayuda</a>
+
+  <div class="logout">
+    <button id="logout">Cerrar Sesión</button>
+  </div>
+</div>
+
+  <div class="main">
+    <h1>Configuración de Créditos</h1>
+
+    <div class="form-container">
+      <form id="configForm">
+        <label for="moneda">Moneda</label>
+        <select id="moneda" required>
+          <option value="">Seleccione...</option>
+          <option value="PEN">Soles (PEN)</option>
+          <option value="USD">Dólares (USD)</option>
+        </select>
+        <div class="tooltip">Define si el crédito será en moneda nacional (Soles) o extranjera (Dólares).</div>
+
+        <label for="tipoCambio">Tipo de Cambio (PEN/USD)</label>
+        <input type="number" id="tipoCambio" step="0.01" min="0.01" value="3.75" style="width:100%;padding:0.7rem;border:1px solid #ccc;border-radius:8px;margin-top:0.3rem;" required>
+        <div class="tooltip">Tipo de cambio actual para conversión de Dólares a Soles. Se usa para evaluar el Bono Techo Propio en propiedades en USD.</div>
+
+        <label for="tasa">Tipo de Tasa de Interés</label>
+        <select id="tasa" required>
+          <option value="">Seleccione...</option>
+          <option value="nominal">Nominal (TIN)</option>
+          <option value="efectiva">Efectiva (TEA)</option>
+        </select>
+        <div class="tooltip">TIN no incluye capitalización; TEA refleja el costo real considerando capitalización.</div>
+
+        <label for="capitalizacion">Capitalización</label>
+        <select id="capitalizacion" required>
+          <option value="">Seleccione...</option>
+          <option value="mensual">Mensual</option>
+          <option value="trimestral">Trimestral</option>
+          <option value="semestral">Semestral</option>
+          <option value="anual">Anual</option>
+        </select>
+        <div class="tooltip">Solo aplica cuando se usa tasa nominal. Define cada cuánto se capitalizan los intereses.</div>
+
+        <label for="gracia">Periodo de Gracia</label>
+        <select id="gracia" required>
+          <option value="">Seleccione...</option>
+          <option value="ninguno">Ninguno</option>
+          <option value="total">Gracia Total</option>
+          <option value="parcial">Gracia Parcial</option>
+        </select>
+        <div class="tooltip">El periodo de gracia puede ser total (no paga nada, intereses se capitalizan) o parcial (solo paga intereses).</div>
+
+        <label for="mesesGracia">Meses de Gracia</label>
+        <input type="number" id="mesesGracia" min="0" max="12" value="0" style="width:100%;padding:0.7rem;border:1px solid #ccc;border-radius:8px;margin-top:0.3rem;">
+        <div class="tooltip">Número de meses de gracia al inicio del crédito (solo aplica si seleccionó gracia total o parcial).</div>
+
+        <button type="submit">Guardar Configuración</button>
+      </form>
+
+      <div class="result" id="resultadoConfig"></div>
+    </div>
+  </div>
+
+  <script>
+    const token = localStorage.getItem('mhf_token');
+    const api = '/api';
+    if (!token) {
+      alert('Inicia sesión');
+      location.href = '/login.html';
+    }
+
+    document.getElementById('logout').onclick = () => {
+      localStorage.removeItem('mhf_token');
+      localStorage.removeItem('mhf_user');
+      window.location.href = '/login.html';
+    };
+
+    const configForm = document.getElementById("configForm");
+    const resultado = document.getElementById("resultadoConfig");
+
+    // Cargar configuración guardada al iniciar
+    function cargarConfiguracionGuardada() {
+      const cfg = localStorage.getItem('mhf_config');
+      if (cfg) {
+        const config = JSON.parse(cfg);
+        if (config.moneda) document.getElementById("moneda").value = config.moneda;
+        if (config.tipo_tasa) document.getElementById("tasa").value = config.tipo_tasa;
+        if (config.capitalizacion) document.getElementById("capitalizacion").value = config.capitalizacion;
+        if (config.periodo_gracia) document.getElementById("gracia").value = config.periodo_gracia;
+        if (config.meses_gracia !== undefined) document.getElementById("mesesGracia").value = config.meses_gracia;
+        if (config.tipo_cambio) document.getElementById("tipoCambio").value = config.tipo_cambio;
+      }
+    }
+    cargarConfiguracionGuardada();
+
+    configForm.onsubmit = async function(e){
+      e.preventDefault();
+      const cfg = {
+        moneda: document.getElementById("moneda").value,
+        tipo_tasa: document.getElementById("tasa").value,
+        capitalizacion: document.getElementById("capitalizacion").value,
+        periodo_gracia: document.getElementById("gracia").value,
+        meses_gracia: parseInt(document.getElementById("mesesGracia").value) || 0,
+        tipo_cambio: parseFloat(document.getElementById("tipoCambio").value) || 3.75
+      };
+
+      // Validación: si hay gracia, debe haber meses > 0
+      if (cfg.periodo_gracia !== 'ninguno' && cfg.meses_gracia <= 0) {
+        alert('Debe especificar los meses de gracia');
+        return;
+      }
+
+      // Si es gracia ninguno, forzar meses a 0
+      if (cfg.periodo_gracia === 'ninguno') {
+        cfg.meses_gracia = 0;
+      }
+
+      // Guardar en backend (y en localStorage como respaldo)
+      localStorage.setItem('mhf_config', JSON.stringify(cfg));
+      try {
+        const res = await fetch(api + '/config', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token },
+          body: JSON.stringify(cfg)
+        });
+        if (!res.ok) throw new Error('Error al guardar configuración');
+      } catch (err) {
+        console.error(err);
+      }
+
+      resultado.style.display = "block";
+      resultado.innerHTML = `
+        <h3>Configuración Guardada ✅</h3>
+        <p><b>Moneda:</b> ${cfg.moneda}</p>
+        <p><b>Tipo de Cambio:</b> S/ ${cfg.tipo_cambio.toFixed(2)} por USD</p>
+        <p><b>Tipo de Tasa:</b> ${cfg.tipo_tasa.toUpperCase()}</p>
+        <p><b>Capitalización:</b> ${cfg.capitalizacion}</p>
+        <p><b>Periodo de Gracia:</b> ${cfg.periodo_gracia}</p>
+        <p><b>Meses de Gracia:</b> ${cfg.meses_gracia}</p>
+      `;
+    };
+  </script>
+  <!-- BOTONES DE VOZ -->
+<div id="voiceControls" style="position:fixed;bottom:20px;right:20px;display:flex;flex-direction:column;gap:8px;z-index:9999;">
+  <button id="playVoice" style="padding:10px 15px;border:none;border-radius:50px;background:#1a73e8;color:white;font-size:16px;cursor:pointer;">🔊 Explicación</button>
+  <button id="pauseVoice" style="padding:10px 15px;border:none;border-radius:50px;background:#fbbc05;color:white;font-size:16px;cursor:pointer;">⏸ Pausa</button>
+  <button id="resetVoice" style="padding:10px 15px;border:none;border-radius:50px;background:#34a853;color:white;font-size:16px;cursor:pointer;">⏮ Reiniciar</button>
+</div>
+
+<script>
+const speechText = `Bienvenido a la Configuración de Créditos. 
+Aquí el asesor define los parámetros iniciales de cada crédito hipotecario: moneda (Soles o Dólares), tipo de tasa de interés (Nominal o Efectiva), capitalización (mensual, trimestral, semestral, anual) y periodo de gracia (ninguno, total o parcial). 
+Cada campo tiene tooltips explicativos y validaciones para evitar combinaciones incorrectas. 
+Esta configuración se usa luego en el cálculo del plan de pagos.`;
+
+const synth = window.speechSynthesis;
+let utterance = null;
+document.getElementById('playVoice').addEventListener('click', () => {
+  if(synth.speaking) return;
+  utterance = new SpeechSynthesisUtterance(speechText);
+  utterance.lang = 'es-PE';
+  synth.speak(utterance);
+});
+document.getElementById('pauseVoice').addEventListener('click', () => {
+  if(synth.speaking && !synth.paused) synth.pause();
+  else if(synth.paused) synth.resume();
+});
+document.getElementById('resetVoice').addEventListener('click', () => synth.cancel());
+</script>
+<!-- EFECTO RASTRO DE SIMBOLOS MATEMATICOS -->
+<style>
+  .math-trail {
+    position: fixed;
+    pointer-events: none;
+    font-size: 18px;
+    font-weight: bold;
+    opacity: 1;
+    transition: opacity 1.5s ease-out, transform 1.5s ease-out;
+    z-index: 9999;
+    color: #1a73e8;
+  }
+</style>
+
+<script>
+(function(){
+  const symbols = ['$', '%', 'X', '+', '-', '=', '¥', '€', '£', '¢', '∆', '∑', 'π', '√', '∞', '≈', '÷', '×', '<', '>', '!', '@', '#', '&', '^', ':', ';', '?', '|', '~', '•'];
+  
+  function createTrail(x, y) {
+    const span = document.createElement('span');
+    span.classList.add('math-trail');
+    span.style.left = x + 'px';
+    span.style.top = y + 'px';
+    span.style.fontSize = (12 + Math.random() * 16) + 'px';
+    span.style.color = `hsl(${Math.random()*360}, 70%, 50%)`;
+    span.innerText = symbols[Math.floor(Math.random() * symbols.length)];
+    document.body.appendChild(span);
+
+    // Animación de desplazamiento y desaparición
+    setTimeout(() => {
+      span.style.transform = `translate(${Math.random()*30-15}px, ${Math.random()*30-15}px) rotate(${Math.random()*360}deg)`;
+      span.style.opacity = 0;
+    }, 50);
+
+    setTimeout(() => document.body.removeChild(span), 1600);
+  }
+
+  // Movimiento de mouse
+  window.addEventListener('mousemove', (e) => {
+    createTrail(e.clientX, e.clientY);
+  });
+
+  // Movimiento táctil (mobile)
+  window.addEventListener('touchmove', (e) => {
+    for(let i=0; i<e.touches.length; i++) {
+      createTrail(e.touches[i].clientX, e.touches[i].clientY);
+    }
+  });
+})();
+</script>
+
+</body>
+</html>

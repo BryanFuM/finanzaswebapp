@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <link rel="icon" type="image/png" href="icon.png">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MiHogarFinanzas - Login</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: "Segoe UI", sans-serif; }
+    body {
+      background: linear-gradient(135deg, #1a73e8, #4285f4, #0f9d58);
+      height: 100vh; display: flex; align-items: center; justify-content: center;
+    }
+    .container {
+      width: 380px; background: #fff; padding: 2rem;
+      border-radius: 15px; box-shadow: 0px 8px 25px rgba(0,0,0,0.3);
+      animation: fadeIn 0.8s ease-in-out;
+    }
+    @keyframes fadeIn { from {opacity: 0; transform: scale(0.9);} to {opacity: 1; transform: scale(1);} }
+    h2 { text-align: center; margin-bottom: 1rem; color: #1a73e8; }
+    .tabs { display: flex; justify-content: center; margin-bottom: 1rem; }
+    .tabs button {
+      flex: 1; padding: 0.7rem; border: none; cursor: pointer; background: #f1f1f1;
+      transition: 0.3s; font-weight: bold;
+    }
+    .tabs button.active { background: #1a73e8; color: #fff; border-radius: 8px 8px 0 0; }
+    form { display: none; }
+    form.active { display: block; }
+    label { display: block; margin-top: 0.8rem; font-size: 0.9rem; color: #333; }
+    input { width: 100%; padding: 0.7rem; border: 1px solid #ccc; border-radius: 8px; margin-top: 0.3rem; }
+    .btn {
+      margin-top: 1rem; width: 100%; padding: 0.8rem; border: none; border-radius: 10px;
+      background: #1a73e8; color: #fff; font-size: 1rem; cursor: pointer; transition: 0.3s;
+    }
+    .btn:hover { background: #0f5dd1; }
+    .error { color: red; font-size: 0.85rem; margin-top: 0.5rem; }
+  
+  /* === RESPONSIVE === */
+@media (max-width: 480px) {
+
+  body {
+    padding: 1rem;
+  }
+
+  .container {
+    width: 100%;
+    max-width: 360px;
+    padding: 1.5rem;
+    border-radius: 12px;
+  }
+
+  h2 {
+    font-size: 1.4rem;
+  }
+
+  .tabs button {
+    font-size: 0.9rem;
+    padding: 0.6rem;
+  }
+
+  label {
+    font-size: 0.85rem;
+  }
+
+  input {
+    padding: 0.65rem;
+    font-size: 0.95rem;
+  }
+
+  .btn {
+    padding: 0.75rem;
+    font-size: 0.95rem;
+  }
+}
+
+/* Mejor vista en tablets */
+@media (max-width: 768px) {
+  .container {
+    width: 90%;
+    max-width: 400px;
+  }
+}
+
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h2>MiHogarFinanzas</h2>
+
+    <div class="tabs">
+      <button id="loginTab" class="active">Login</button>
+      <button id="registerTab">Registro</button>
+    </div>
+
+    <!-- LOGIN -->
+    <form id="loginForm" class="active">
+      <label for="email">Correo</label>
+      <input type="email" id="email" required>
+      <label for="password">Contraseña</label>
+      <input type="password" id="password" required>
+      <button type="submit" class="btn">Ingresar</button>
+      <p id="loginError" class="error"></p>
+    </form>
+
+    <!-- REGISTRO -->
+    <form id="registerForm">
+      <label for="rname">Nombre</label>
+      <input type="text" id="rname" required>
+      <label for="remail">Correo</label>
+      <input type="email" id="remail" required>
+      <label for="rpass">Contraseña</label>
+      <input type="password" id="rpass" required>
+      <button type="submit" class="btn">Registrar</button>
+      <p id="regError" class="error"></p>
+    </form>
+  </div>
+
+<script>
+const api = '/api';
+
+const loginTab = document.getElementById("loginTab");
+const registerTab = document.getElementById("registerTab");
+const loginForm = document.getElementById("loginForm");
+const registerForm = document.getElementById("registerForm");
+
+// Cambio de pestañas
+loginTab.onclick = () => {
+  loginTab.classList.add("active");
+  registerTab.classList.remove("active");
+  loginForm.classList.add("active");
+  registerForm.classList.remove("active");
+};
+registerTab.onclick = () => {
+  registerTab.classList.add("active");
+  loginTab.classList.remove("active");
+  registerForm.classList.add("active");
+  loginForm.classList.remove("active");
+};
+
+// ==== LOGIN REAL ====
+loginForm.onsubmit = async (e)=> {
+  e.preventDefault();
+  const email = document.getElementById('email').value;
+  const password = document.getElementById('password').value;
+
+  const res = await fetch(api+'/auth/login',{
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({email, password})
+  });
+
+  const data = await res.json();
+  if(!res.ok){ document.getElementById('loginError').innerText = data.message || 'Error'; return; }
+
+  localStorage.setItem('mhf_token', data.token);
+  localStorage.setItem('mhf_user', JSON.stringify(data.user));
+  window.location.href = '/dashboard.html';
+};
+
+// ==== REGISTRO REAL ====
+registerForm.onsubmit = async (e)=> {
+  e.preventDefault();
+  const name = document.getElementById('rname').value;
+  const email = document.getElementById('remail').value;
+  const password = document.getElementById('rpass').value;
+
+  const res = await fetch(api+'/auth/register',{
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({name,email,password})
+  });
+
+  const data = await res.json();
+  if(!res.ok){ document.getElementById('regError').innerText = data.message || 'Error'; return; }
+
+  alert('✅ Registrado correctamente. Ahora inicia sesión.');
+  loginTab.click();
+};
+</script>
+<!-- BOTONES DE VOZ -->
+<div id="voiceControls" style="
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 9999;
+">
+  <button id="playVoice" style="padding:10px 15px; border:none; border-radius:50px; background:#1a73e8; color:white; font-size:16px; cursor:pointer;">
+    🔊 Explicación
+  </button>
+  <button id="pauseVoice" style="padding:10px 15px; border:none; border-radius:50px; background:#fbbc05; color:white; font-size:16px; cursor:pointer;">
+    ⏸ Pausa
+  </button>
+  <button id="resetVoice" style="padding:10px 15px; border:none; border-radius:50px; background:#34a853; color:white; font-size:16px; cursor:pointer;">
+    ⏮ Reiniciar
+  </button>
+</div>
+
+<script>
+const speechText = `Bienvenido a la interfaz de Login y Registro de MiHogarFinanzas. 
+Esta pantalla es la puerta de entrada al sistema. 
+En Login, el usuario ingresa su correo y contraseña para acceder de manera segura al sistema. 
+En Registro, los nuevos usuarios pueden crear una cuenta completando nombre, correo y contraseña. 
+La interfaz es responsiva, diseñada para casetas inmobiliarias, y valida los campos en tiempo real para evitar errores. 
+Puede cambiar entre Login y Registro usando las pestañas en la parte superior.`;
+
+const synth = window.speechSynthesis;
+let utterance = null;
+
+document.getElementById('playVoice').addEventListener('click', () => {
+  if(synth.speaking) return;
+  utterance = new SpeechSynthesisUtterance(speechText);
+  utterance.lang = 'es-PE';
+  synth.speak(utterance);
+});
+
+document.getElementById('pauseVoice').addEventListener('click', () => {
+  if(synth.speaking && !synth.paused) synth.pause();
+  else if(synth.paused) synth.resume();
+});
+
+document.getElementById('resetVoice').addEventListener('click', () => synth.cancel());
+</script>
+<!-- EFECTO RASTRO DE SIMBOLOS MATEMATICOS -->
+<style>
+  .math-trail {
+    position: fixed;
+    pointer-events: none;
+    font-size: 18px;
+    font-weight: bold;
+    opacity: 1;
+    transition: opacity 1.5s ease-out, transform 1.5s ease-out;
+    z-index: 9999;
+    color: #1a73e8;
+  }
+</style>
+
+<script>
+(function(){
+  const symbols = ['$', '%', 'X', '+', '-', '=', '¥', '€', '£', '¢', '∆', '∑', 'π', '√', '∞', '≈', '÷', '×', '<', '>', '!', '@', '#', '&', '^', ':', ';', '?', '|', '~', '•'];
+  
+  function createTrail(x, y) {
+    const span = document.createElement('span');
+    span.classList.add('math-trail');
+    span.style.left = x + 'px';
+    span.style.top = y + 'px';
+    span.style.fontSize = (12 + Math.random() * 16) + 'px';
+    span.style.color = `hsl(${Math.random()*360}, 70%, 50%)`;
+    span.innerText = symbols[Math.floor(Math.random() * symbols.length)];
+    document.body.appendChild(span);
+
+    // Animación de desplazamiento y desaparición
+    setTimeout(() => {
+      span.style.transform = `translate(${Math.random()*30-15}px, ${Math.random()*30-15}px) rotate(${Math.random()*360}deg)`;
+      span.style.opacity = 0;
+    }, 50);
+
+    setTimeout(() => document.body.removeChild(span), 1600);
+  }
+
+  // Movimiento de mouse
+  window.addEventListener('mousemove', (e) => {
+    createTrail(e.clientX, e.clientY);
+  });
+
+  // Movimiento táctil (mobile)
+  window.addEventListener('touchmove', (e) => {
+    for(let i=0; i<e.touches.length; i++) {
+      createTrail(e.touches[i].clientX, e.touches[i].clientY);
+    }
+  });
+})();
+</script>
+
+</body>
+</html>

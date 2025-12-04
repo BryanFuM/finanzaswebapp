@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+   <link rel="icon" type="image/png" href="icon.png">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gestión de Unidades Inmobiliarias - MiHogarFinanzas</title>
+  <style>
+    * {margin: 0; padding: 0; box-sizing: border-box; font-family: "Segoe UI", sans-serif;}
+    body {display: flex; background: #f4f6f9; height: 100vh;}
+    .sidebar {
+      width: 250px; background: #1a73e8; color: white; display: flex; flex-direction: column; padding: 1rem;
+    }
+    .sidebar h3 {text-align: center; margin-bottom: 1.5rem;}
+    .sidebar a {
+      color: white; text-decoration: none; padding: 0.6rem 0.8rem;
+      display: block; border-radius: 8px; transition: 0.3s;
+    }
+    .sidebar a:hover {background: #0f5dd1;}
+    .sidebar button {
+      margin-top: auto; padding: 0.8rem; border: none;
+      background: red; color: white; border-radius: 8px; cursor: pointer;
+      transition: 0.3s;
+    }
+    .sidebar button:hover {background: darkred;}
+    .main {
+      flex: 1; padding: 2rem; overflow-y: auto;
+    }
+    h1 {color: #1a73e8; margin-bottom: 1rem;}
+    .form-container, .table-container {
+      background: white; padding: 1.5rem; border-radius: 12px;
+      box-shadow: 0px 4px 12px rgba(0,0,0,0.1); margin-bottom: 2rem;
+    }
+    label {display: block; margin-top: 0.8rem; font-size: 0.9rem; color: #333;}
+    input, select {
+      width: 100%; padding: 0.7rem; border: 1px solid #ccc;
+      border-radius: 8px; margin-top: 0.3rem;
+    }
+    button {
+      margin-top: 1rem; padding: 0.8rem 1.5rem;
+      border: none; border-radius: 8px; background: #1a73e8;
+      color: white; font-weight: bold; cursor: pointer; transition: 0.3s;
+    }
+    button:hover {background: #0f5dd1;}
+    table {width: 100%; border-collapse: collapse; margin-top: 1rem;}
+    th, td {padding: 0.8rem; text-align: left; border-bottom: 1px solid #ddd;}
+    th {background: #1a73e8; color: white;}
+    tr:hover {background: #f1f1f1;}
+    .actions button {
+      margin-right: 0.5rem; padding: 0.5rem 1rem; font-size: 0.8rem;
+    }
+    .edit {background: #ffa000;}
+    .delete {background: red;}
+    .msg {color: green; margin-top: 1rem;}
+
+    * {margin: 0; padding: 0; box-sizing: border-box; font-family: "Segoe UI", sans-serif;}
+body {display: flex; height: 100vh; background: #f4f6f9;}
+
+.sidebar {
+  width: 250px; background: #1a73e8; color: white;
+  display: flex; flex-direction: column; padding: 1rem;
+}
+
+.sidebar h3 {text-align: center; margin-bottom: 2rem;}
+
+.sidebar a {
+  text-decoration: none; color: white; padding: 0.6rem 0.8rem;
+  display: block; border-radius: 8px; transition: 0.3s;
+}
+
+.sidebar a:hover {background: #0f5dd1;}
+
+.main {
+  flex: 1; padding: 2rem; overflow-y: auto;
+}
+
+.logout {margin-top: auto; text-align: center;}
+
+.logout button {
+  background: red; border: none; color: white; padding: 0.7rem 1rem;
+  border-radius: 8px; cursor: pointer; transition: 0.3s; width: 100%;
+}
+
+.logout button:hover {background: darkred;}
+.brand {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 2rem;
+}
+
+.brand img {
+  width: 35px;       /* tamaño del logo */
+  height: 35px;
+  border-radius: 50%; /* si quieres redondo, si no: borra esta línea */
+  object-fit: cover;
+}
+
+.brand span {
+  font-weight: bold;
+  font-size: 1.1rem;
+}
+/* ======== RESPONSIVE DESIGN ======== */
+@media(max-width: 900px){
+
+  body{
+    flex-direction: column;
+    height: auto;
+  }
+
+  .sidebar{
+    width: 100%;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    text-align: center;
+  }
+
+  .sidebar a{
+    padding: 0.5rem;
+    margin: 4px;
+    font-size: 0.85rem;
+  }
+
+  .brand{
+    width: 100%;
+    margin-bottom: 1rem;
+  }
+
+  .main{
+    padding: 1.2rem;
+  }
+
+  table, thead, tbody, th, td, tr{
+    display: block;
+  }
+
+  thead{
+    display: none;
+  }
+
+  tr{
+    margin-bottom: 1rem;
+    background: white;
+    padding: 1rem;
+    border-radius: 6px;
+  }
+
+  td{
+    display: flex;
+    justify-content: space-between;
+    padding: 6px 0;
+    border: none;
+  }
+
+  td::before{
+    content: attr(data-label);
+    font-weight: bold;
+    color: #1a73e8;
+  }
+
+}
+
+  </style>
+</head>
+<body>
+  <div class="sidebar">
+  <div class="brand">
+  <img src="logo.png" alt="Logo">
+  <span>MiHogarFinanzas</span>
+</div>
+  <a href="/dashboard.html">🏠 Dashboard</a>
+  <a href="/clientes.html">👤 Clientes</a>
+  <a href="/inmuebles.html">🏘️ Unidades</a>
+  <a href="/configuracion.html">⚙️ Configuración</a>
+  <a href="/planpagos.html">📊 Plan de Pagos</a>
+  <a href="/indicadores.html">📈 Indicadores</a>
+  <a href="/reportes.html">🗂 Reportes</a>
+  <a href="/ayuda.html">❓ Ayuda</a>
+
+  <div class="logout">
+    <button id="logout">Cerrar Sesión</button>
+  </div>
+</div>
+
+
+  <div class="main">
+    <h1>Gestión de Unidades Inmobiliarias</h1>
+
+    <div class="form-container">
+      <h2 id="form-title">Registrar Inmueble</h2>
+      <label>Proyecto</label><input id="pname">
+      <label>Dirección</label><input id="paddr">
+      <label>Área (m²)</label><input id="parea" type="number">
+      <label>Habitaciones</label><input id="prooms" type="number">
+      <label>Precio</label><input id="pprice" type="number">
+      <label>Moneda</label>
+      <select id="pcurrency"><option value="PEN">Soles (PEN)</option><option value="USD">Dólares (USD)</option></select>
+      <label>Estado</label>
+      <select id="pstatus"><option>Disponible</option><option>Reservado</option><option>Vendido</option></select>
+      <button id="save">Guardar Inmueble</button>
+      <div id="msg" class="msg"></div>
+    </div>
+
+    <div class="table-container">
+      <h2>Lista de Inmuebles</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Proyecto</th>
+            <th>Dirección</th>
+            <th>Área (m²)</th>
+            <th>Habitaciones</th>
+            <th>Precio</th>
+            <th>Moneda</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody id="list"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <script>
+    const api = '/api';
+    const token = localStorage.getItem('mhf_token');
+    if(!token){ alert('Inicia sesión'); window.location.href='/login.html'; }
+
+    document.getElementById('logout').onclick = ()=>{
+      localStorage.removeItem('mhf_token');
+      localStorage.removeItem('mhf_user');
+      window.location.href='/login.html';
+    };
+
+    let editId = null;
+
+    // Funciones de validación
+    function validarProyecto(proyecto) {
+      if (!proyecto || proyecto.trim().length < 3) return 'El nombre del proyecto debe tener al menos 3 caracteres';
+      return null;
+    }
+
+    function validarDireccion(direccion) {
+      if (!direccion || direccion.trim().length < 5) return 'La dirección debe tener al menos 5 caracteres';
+      return null;
+    }
+
+    function validarArea(area) {
+      if (!area || parseFloat(area) <= 0) return 'El área debe ser mayor a 0';
+      if (parseFloat(area) > 10000) return 'El área no puede superar 10,000 m²';
+      return null;
+    }
+
+    function validarHabitaciones(habitaciones) {
+      if (!habitaciones || parseInt(habitaciones) < 1) return 'Debe tener al menos 1 habitación';
+      if (parseInt(habitaciones) > 20) return 'El máximo es 20 habitaciones';
+      return null;
+    }
+
+    function validarPrecio(precio) {
+      if (!precio || parseFloat(precio) <= 0) return 'El precio debe ser mayor a 0';
+      if (parseFloat(precio) > 50000000) return 'El precio no puede superar 50,000,000';
+      return null;
+    }
+
+    async function load(){
+      const res = await fetch(api+'/properties',{ headers:{ Authorization:'Bearer '+token }});
+      const props = await res.json();
+      document.getElementById('list').innerHTML = props.map(p=>`
+          <tr>
+            <td>${p.id}</td>
+            <td>${p.project_name}</td>
+            <td>${p.address}</td>
+            <td>${p.area}</td>
+            <td>${p.rooms}</td>
+            <td>${p.currency === 'PEN' ? 'S/ ' : '$'}${p.price}</td>
+            <td>${p.currency}</td>
+            <td>${p.status}</td>
+            <td class="actions">
+              <button class="edit" onclick='edit(${JSON.stringify(p)})'>Editar</button>
+              <button class="delete" onclick="del(${p.id})">Eliminar</button>
+            </td>
+          </tr>`).join('');
+    }
+    load();
+
+    document.getElementById('save').onclick = async ()=>{
+      const proyecto = document.getElementById('pname').value;
+      const direccion = document.getElementById('paddr').value;
+      const area = document.getElementById('parea').value;
+      const habitaciones = document.getElementById('prooms').value;
+      const precio = document.getElementById('pprice').value;
+      const moneda = document.getElementById('pcurrency').value;
+      const estado = document.getElementById('pstatus').value;
+
+      // Validaciones
+      let error = validarProyecto(proyecto) || validarDireccion(direccion) || 
+                  validarArea(area) || validarHabitaciones(habitaciones) || validarPrecio(precio);
+      
+      if (error) {
+        document.getElementById('msg').innerText = '❌ ' + error;
+        document.getElementById('msg').style.color = 'red';
+        return;
+      }
+
+      const data = {
+        project_name: proyecto.trim(),
+        address: direccion.trim(),
+        area: area,
+        rooms: habitaciones,
+        price: precio,
+        currency: moneda,
+        status: estado
+      };
+
+      let url = api+'/properties';
+      let method = 'POST';
+      if(editId){ url += '/'+editId; method = 'PUT'; }
+
+      const res = await fetch(url, {
+        method,
+        headers:{'Content-Type':'application/json', Authorization:'Bearer '+token},
+        body: JSON.stringify(data)
+      });
+
+      if(!res.ok){ document.getElementById('msg').innerText='❌ Error al guardar'; return; }
+
+      document.getElementById('msg').innerText = editId ? '✅ Inmueble actualizado correctamente' : '✅ Inmueble guardado correctamente';
+      editId = null;
+      document.getElementById('form-title').innerText = 'Registrar Inmueble';
+      document.getElementById('save').innerText = 'Guardar Inmueble';
+      document.querySelectorAll('input, select').forEach(i => i.value = '');
+      load();
+    };
+
+    window.edit = (p)=>{
+      editId = p.id;
+      document.getElementById('form-title').innerText = 'Editar Inmueble';
+      document.getElementById('save').innerText = 'Actualizar Inmueble';
+      document.getElementById('pname').value = p.project_name;
+      document.getElementById('paddr').value = p.address;
+      document.getElementById('parea').value = p.area;
+      document.getElementById('prooms').value = p.rooms;
+      document.getElementById('pprice').value = p.price;
+      document.getElementById('pcurrency').value = p.currency;
+      document.getElementById('pstatus').value = p.status;
+    };
+
+    window.del = async (id)=>{
+      if(!confirm('¿Eliminar este inmueble?')) return;
+      await fetch(api+'/properties/'+id,{ method:'DELETE', headers:{ Authorization:'Bearer '+token }});
+      load();
+    };
+  </script>
+  <!-- BOTONES DE VOZ -->
+<div id="voiceControls" style="position:fixed;bottom:20px;right:20px;display:flex;flex-direction:column;gap:8px;z-index:9999;">
+  <button id="playVoice" style="padding:10px 15px;border:none;border-radius:50px;background:#1a73e8;color:white;font-size:16px;cursor:pointer;">🔊 Explicación</button>
+  <button id="pauseVoice" style="padding:10px 15px;border:none;border-radius:50px;background:#fbbc05;color:white;font-size:16px;cursor:pointer;">⏸ Pausa</button>
+  <button id="resetVoice" style="padding:10px 15px;border:none;border-radius:50px;background:#34a853;color:white;font-size:16px;cursor:pointer;">⏮ Reiniciar</button>
+</div>
+
+<script>
+const speechText = `Bienvenido a la Gestión de Unidades Inmobiliarias. 
+Aquí se registran, consultan y actualizan las propiedades disponibles para la venta con crédito hipotecario. 
+Se manejan datos como nombre del proyecto, dirección, área en metros cuadrados, precio, número de habitaciones y estado de disponibilidad. 
+La tabla dinámica permite listar, editar o eliminar propiedades. 
+El formulario de registro es validado y la interfaz es responsiva para casetas inmobiliarias.`;
+
+const synth = window.speechSynthesis;
+let utterance = null;
+document.getElementById('playVoice').addEventListener('click', () => {
+  if(synth.speaking) return;
+  utterance = new SpeechSynthesisUtterance(speechText);
+  utterance.lang = 'es-PE';
+  synth.speak(utterance);
+});
+document.getElementById('pauseVoice').addEventListener('click', () => {
+  if(synth.speaking && !synth.paused) synth.pause();
+  else if(synth.paused) synth.resume();
+});
+document.getElementById('resetVoice').addEventListener('click', () => synth.cancel());
+</script>
+<!-- EFECTO RASTRO DE SIMBOLOS MATEMATICOS -->
+<style>
+  .math-trail {
+    position: fixed;
+    pointer-events: none;
+    font-size: 18px;
+    font-weight: bold;
+    opacity: 1;
+    transition: opacity 1.5s ease-out, transform 1.5s ease-out;
+    z-index: 9999;
+    color: #1a73e8;
+  }
+</style>
+
+<script>
+(function(){
+  const symbols = ['$', '%', 'X', '+', '-', '=', '¥', '€', '£', '¢', '∆', '∑', 'π', '√', '∞', '≈', '÷', '×', '<', '>', '!', '@', '#', '&', '^', ':', ';', '?', '|', '~', '•'];
+  
+  function createTrail(x, y) {
+    const span = document.createElement('span');
+    span.classList.add('math-trail');
+    span.style.left = x + 'px';
+    span.style.top = y + 'px';
+    span.style.fontSize = (12 + Math.random() * 16) + 'px';
+    span.style.color = `hsl(${Math.random()*360}, 70%, 50%)`;
+    span.innerText = symbols[Math.floor(Math.random() * symbols.length)];
+    document.body.appendChild(span);
+
+    // Animación de desplazamiento y desaparición
+    setTimeout(() => {
+      span.style.transform = `translate(${Math.random()*30-15}px, ${Math.random()*30-15}px) rotate(${Math.random()*360}deg)`;
+      span.style.opacity = 0;
+    }, 50);
+
+    setTimeout(() => document.body.removeChild(span), 1600);
+  }
+
+  // Movimiento de mouse
+  window.addEventListener('mousemove', (e) => {
+    createTrail(e.clientX, e.clientY);
+  });
+
+  // Movimiento táctil (mobile)
+  window.addEventListener('touchmove', (e) => {
+    for(let i=0; i<e.touches.length; i++) {
+      createTrail(e.touches[i].clientX, e.touches[i].clientY);
+    }
+  });
+})();
+</script>
+
+</body>
+</html>

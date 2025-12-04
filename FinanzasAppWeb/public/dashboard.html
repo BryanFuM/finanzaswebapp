@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+   <link rel="icon" type="image/png" href="icon.png">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - MiHogarFinanzas</title>
+  <link rel="stylesheet" href="assets.css">
+  <style>
+    * {margin: 0; padding: 0; box-sizing: border-box; font-family: "Segoe UI", sans-serif;}
+    body {display: flex; height: 100vh; background: #f4f6f9;}
+    .sidebar {
+      width: 250px; background: #1a73e8; color: white;
+      display: flex; flex-direction: column; padding: 1rem;
+    }
+    .sidebar h3 {text-align: center; margin-bottom: 2rem;}
+    .sidebar a {
+      text-decoration: none; color: white; padding: 0.6rem 0.8rem;
+      display: block; border-radius: 8px; transition: 0.3s;
+    }
+    .sidebar a:hover {background: #0f5dd1;}
+    .main {
+      flex: 1; padding: 2rem; overflow-y: auto;
+    }
+    .main h1 {margin-bottom: 1.5rem; color: #333;}
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.5rem;
+    }
+    .card {
+      background: white; padding: 1.5rem; border-radius: 12px;
+      box-shadow: 0px 4px 12px rgba(0,0,0,0.1);
+      transition: transform 0.3s ease-in-out;
+    }
+    .card:hover {transform: translateY(-5px);}
+    .card h3 {margin-bottom: 0.5rem; color: #1a73e8;}
+    .card p {font-size: 1.1rem; font-weight: bold; color: #333;}
+    .logout {margin-top: auto; text-align: center;}
+    .logout button {
+      background: red; border: none; color: white; padding: 0.7rem 1rem;
+      border-radius: 8px; cursor: pointer; transition: 0.3s;
+    }
+    .logout button:hover {background: darkred;}
+
+    .brand {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 2rem;
+}
+
+.brand img {
+  width: 35px;       /* tamaño del logo */
+  height: 35px;
+  border-radius: 50%; /* si quieres redondo, si no: borra esta línea */
+  object-fit: cover;
+}
+
+.brand span {
+  font-weight: bold;
+  font-size: 1.1rem;
+}
+
+  </style>
+</head>
+<body>
+  <div class="sidebar">
+    <div class="brand">
+  <img src="logo.png" alt="Logo">
+  <span>MiHogarFinanzas</span>
+</div>
+    <a href="/dashboard.html">🏠 Dashboard</a>
+    <a href="/clientes.html">👤 Clientes</a>
+    <a href="/inmuebles.html">🏘️ Unidades</a>
+    <a href="/configuracion.html">⚙️ Configuración</a>
+    <a href="/planpagos.html">📊 Plan de Pagos</a>
+    <a href="/indicadores.html">📈 Indicadores</a>
+    <a href="/reportes.html">🗂 Reportes</a>
+    <a href="/ayuda.html">❓ Ayuda</a>
+    <div class="logout"><button id="logout">Cerrar Sesión</button></div>
+  </div>
+
+  <div class="main">
+    <h1>Panel Principal</h1>
+    <div class="cards" id="stats">
+      <!-- Datos dinámicos cargados desde backend -->
+    </div>
+    <!-- Imagen al final del contenido principal -->
+<div style="width:100%; text-align:center; margin-top:20px;">
+  <img src="dashboardimage.png" 
+       alt="Dashboard resumen de métricas" 
+       style="width:100%; max-width:1200px; height:auto; border-radius:8px; box-shadow:0 4px 12px rgba(0,0,0,0.15);">
+</div>
+  </div>
+
+  <script>
+    const api = '/api';
+    const token = localStorage.getItem('mhf_token');
+    if(!token) { alert('Inicia sesión'); window.location.href='/login.html'; }
+
+    async function load(){
+      try {
+        const headers = { Authorization: 'Bearer ' + token };
+        const clients = await (await fetch(api + '/clients', { headers })).json();
+        const props = await (await fetch(api + '/properties', { headers })).json();
+        const user = JSON.parse(localStorage.getItem('mhf_user') || '{}');
+        const lastAccess = new Date().toLocaleString();
+
+        document.getElementById('stats').innerHTML = `
+          <div class="card"><h3>👤 Clientes Registrados</h3><p>${clients.length}</p></div>
+          <div class="card"><h3>🏠 Unidades Disponibles</h3><p>${props.length}</p></div>
+          <div class="card"><h3>👩‍💼 Usuario Activo</h3><p>${user.name || '—'}</p></div>
+          <div class="card"><h3>🕓 Último Acceso</h3><p>${lastAccess}</p></div>
+        `;
+      } catch (err) {
+        console.error(err);
+        document.getElementById('stats').innerHTML = `<p style="color:red;">Error al cargar datos del servidor.</p>`;
+      }
+    }
+
+    document.getElementById('logout').onclick = () => {
+      localStorage.removeItem('mhf_token');
+      localStorage.removeItem('mhf_user');
+      window.location.href = '/login.html';
+    };
+
+    load();
+  </script>
+
+  
+  <!-- BOTONES DE VOZ -->
+<div id="voiceControls" style="position:fixed;bottom:20px;right:20px;display:flex;flex-direction:column;gap:8px;z-index:9999;">
+  <button id="playVoice" style="padding:10px 15px;border:none;border-radius:50px;background:#1a73e8;color:white;font-size:16px;cursor:pointer;">🔊 Explicación</button>
+  <button id="pauseVoice" style="padding:10px 15px;border:none;border-radius:50px;background:#fbbc05;color:white;font-size:16px;cursor:pointer;">⏸ Pausa</button>
+  <button id="resetVoice" style="padding:10px 15px;border:none;border-radius:50px;background:#34a853;color:white;font-size:16px;cursor:pointer;">⏮ Reiniciar</button>
+</div>
+
+<script>
+const speechText = `Bienvenido al Dashboard de MiHogarFinanzas. 
+Esta es la pantalla principal y centro de navegación del sistema. 
+Aquí el asesor puede acceder rápidamente a todas las secciones: Clientes, Unidades Inmobiliarias, Configuración de Créditos, Generación del Plan de Pagos, Indicadores Financieros, Reportes y Ayuda. 
+El panel central muestra tarjetas con métricas como número de clientes registrados, créditos activos y propiedades disponibles. 
+La interfaz es responsiva y moderna, diseñada para uso empresarial en casetas inmobiliarias.`;
+
+const synth = window.speechSynthesis;
+let utterance = null;
+
+document.getElementById('playVoice').addEventListener('click', () => {
+  if(synth.speaking) return;
+  utterance = new SpeechSynthesisUtterance(speechText);
+  utterance.lang = 'es-PE';
+  synth.speak(utterance);
+});
+document.getElementById('pauseVoice').addEventListener('click', () => {
+  if(synth.speaking && !synth.paused) synth.pause();
+  else if(synth.paused) synth.resume();
+});
+document.getElementById('resetVoice').addEventListener('click', () => synth.cancel());
+</script>
+<!-- EFECTO RASTRO DE SIMBOLOS MATEMATICOS -->
+<style>
+  .math-trail {
+    position: fixed;
+    pointer-events: none;
+    font-size: 18px;
+    font-weight: bold;
+    opacity: 1;
+    transition: opacity 1.5s ease-out, transform 1.5s ease-out;
+    z-index: 9999;
+    color: #1a73e8;
+  }
+</style>
+
+<script>
+(function(){
+  const symbols = ['$', '%', 'X', '+', '-', '=', '¥', '€', '£', '¢', '∆', '∑', 'π', '√', '∞', '≈', '÷', '×', '<', '>', '!', '@', '#', '&', '^', ':', ';', '?', '|', '~', '•'];
+  
+  function createTrail(x, y) {
+    const span = document.createElement('span');
+    span.classList.add('math-trail');
+    span.style.left = x + 'px';
+    span.style.top = y + 'px';
+    span.style.fontSize = (12 + Math.random() * 16) + 'px';
+    span.style.color = `hsl(${Math.random()*360}, 70%, 50%)`;
+    span.innerText = symbols[Math.floor(Math.random() * symbols.length)];
+    document.body.appendChild(span);
+
+    // Animación de desplazamiento y desaparición
+    setTimeout(() => {
+      span.style.transform = `translate(${Math.random()*30-15}px, ${Math.random()*30-15}px) rotate(${Math.random()*360}deg)`;
+      span.style.opacity = 0;
+    }, 50);
+
+    setTimeout(() => document.body.removeChild(span), 1600);
+  }
+
+  // Movimiento de mouse
+  window.addEventListener('mousemove', (e) => {
+    createTrail(e.clientX, e.clientY);
+  });
+
+  // Movimiento táctil (mobile)
+  window.addEventListener('touchmove', (e) => {
+    for(let i=0; i<e.touches.length; i++) {
+      createTrail(e.touches[i].clientX, e.touches[i].clientY);
+    }
+  });
+})();
+</script>
+
+
+</body>
+</html>
